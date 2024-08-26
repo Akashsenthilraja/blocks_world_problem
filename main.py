@@ -1,40 +1,47 @@
-from BlockWorldAgent import BlockWorldAgent
+class BlockWorld:
+  def __init__(self,initial_state,goal_state):
+    self.state = initial_state
+    self.goal_state = goal_state
+    self.actions = []
+  def move_to_table(self, block):
+    if self.state[block] != 'table':
+      self.state[block] = 'table'
+      self.actions.append(f"Move {block} to the table.")
+  def stack(self, block1, block2):
+    if self.state[block1] != block2:
+      self.state[block1] = block2
+      self.actions.append(f"Stack {block1} on {block2}.")
+  def execute_actions(self):
+    for block, target in self.goal_state.items():
+      if target == 'table':
+        self.move_to_table(block)
+      else:
+        self.stack(block, target)
+  def get_final_state(self):
+    return self.state
+  def get_action_sequence(self):
+    return self.actions
 
+initial_state = {
+      'A' : 'B',
+      'B' : 'C',
+      'C' : 'table'
+}
 
-def test():
+goal_state = {
+      'A' : 'table',
+      'B': 'A',
+      'C' : 'B'
+}
 
-    test_agent = BlockWorldAgent()
+world = BlockWorld(initial_state, goal_state)
 
-    initial_arrangement_1 = [["A", "B", "C"], ["D", "E"]]
-    goal_arrangement_1 = [["A", "C"], ["D", "E", "B"]]
-    goal_arrangement_2 = [["A", "B", "C", "D", "E"]]
-    goal_arrangement_3 = [["D", "E", "A", "B", "C"]]
-    goal_arrangement_4 = [["C", "D"], ["E", "A", "B"]]
+world.execute_actions()
 
-    print("\nIteration 1")
-    print(test_agent.solve(initial_arrangement_1, goal_arrangement_1))
-    print("\nIteration 2")
-    print(test_agent.solve(initial_arrangement_1, goal_arrangement_2))
-    print("\nIteration 3")
-    print(test_agent.solve(initial_arrangement_1, goal_arrangement_3))
-    print("\nIteration 4")
-    print(test_agent.solve(initial_arrangement_1, goal_arrangement_4))
+final_state = world.get_final_state()
+action_sequence = world.get_action_sequence()
+print("Final State:", final_state)
+print("Action Sequence:")
+for action in action_sequence:
+  print(action)
 
-    initial_arrangement_2 = [["A", "B", "C"], ["D", "E", "F"], ["G", "H", "I"]]
-    goal_arrangement_5 = [["A", "B", "C", "D", "E", "F", "G", "H", "I"]]
-    goal_arrangement_6 = [["I", "H", "G", "F", "E", "D", "C", "B", "A"]]
-    goal_arrangement_7 = [["H", "E", "F", "A", "C"], ["B", "D"], ["G", "I"]]
-    goal_arrangement_8 = [["F", "D", "C", "I", "G", "A"], ["B", "E", "H"]]
-
-    print("\nIteration 5")
-    print(test_agent.solve(initial_arrangement_2, goal_arrangement_5))
-    print("\nIteration 6")
-    print(test_agent.solve(initial_arrangement_2, goal_arrangement_6))
-    print("\nIteration 7")
-    print(test_agent.solve(initial_arrangement_2, goal_arrangement_7))
-    print("\nIteration 8")
-    print(test_agent.solve(initial_arrangement_2, goal_arrangement_8))
-
-
-if __name__ == "__main__":
-    test()
